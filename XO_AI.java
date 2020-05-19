@@ -64,7 +64,7 @@ public class XO_AI {
         choiceAI();//выбор противника со случайным подбором ходов или осмысленным
         while (true) {
             playerTurn();//ход игрока 1
-            //homoTurn();//ход хомо
+            printNumericKeypad();
             if (checkWin(player1sign)) {//проверка на выигрыш игрока 1 или ничью:
                 System.out.println("Победа игрока 1!");//сообщить и выйти из цикла
                 break;
@@ -74,7 +74,6 @@ public class XO_AI {
             }
 
             playerTurn();//ход игрока 2
-            //aiTurn();//ход ИИ со случайным выбором
             printNumericKeypad();
             if (checkWin(player2sign)) {//проверка на выигрыш игрока 2 или ничью:
                 System.out.println("Победа игрока 2!");//сообщить и выйти из цикла
@@ -204,22 +203,26 @@ public class XO_AI {
         }
         while (pl < 0 || pl > 1);
 
-        do {
-            System.out.println("Нажмите 0 для случайного выбора хода компьютером и 1 для осмысленного");
-            aiLevel = ch.nextInt();
-        }
-        while (aiLevel < 0 || aiLevel > 1);
+        if (player1 == 1 || player2 == 1) {
+            do {
 
-        switch (aiLevel) {
-            case 0:
-                break;
-            case 1:
-                do {
-                    System.out.println("Нажмите 1 для выбора простого уровня сложности и 2 для продвинутого");
-                    aiLevel = ch.nextInt();
-                }
-                while (aiLevel < 1 || aiLevel > 2);
-                break;
+                System.out.println("Нажмите 0 для случайного выбора хода компьютером и 1 для осмысленного");
+                aiLevel = ch.nextInt();
+            }
+
+            while (aiLevel < 0 || aiLevel > 1);
+
+            switch (aiLevel) {
+                case 0:
+                    break;
+                case 1:
+                    do {
+                        System.out.println("Нажмите 1 для выбора простого уровня сложности и 2 для продвинутого");
+                        aiLevel = ch.nextInt();
+                    }
+                    while (aiLevel < 1 || aiLevel > 2);
+                    break;
+            }
         }
         return aiLevel;
     }
@@ -366,9 +369,6 @@ public class XO_AI {
         int cell1Counter = 0;
         int cell0Counter = 0;
         int randomTurn = 0;
-
-        // В цикле с начальной проверкой условия: (пустая клетка) && (клетка, отмеченная лишь одним знаком):
-
 
 
         //пробегаем весь массив oddsTable и ищем свои odds, равные 2
@@ -673,7 +673,8 @@ class Field {//3-м. массив
         this.sign = signXO;
     }
 
-    /**Метод при выводе на печать 3-м. массива печатает точки в линиях, где индекс ячейки равен 9*/
+    /**Метод при выводе на печать 3-м. массива печатает точки в линиях, где индекс ячейки равен 9
+     * в игре не используется, нужен был для отладки*/
     public void printIndexAndDotInstead9() {
         if (this.getIndex() == 9) {
             System.out.print(this.getSign());
