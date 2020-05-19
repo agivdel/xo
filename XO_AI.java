@@ -43,6 +43,12 @@ public class XO_AI {
     private int cell = 0;//клетка, счетчик для преебора элементов 2- и 3-м. массивов
     private int aiLevel;//выбор уровня сложности
     boolean firstTurnOfAI = true;//счетчик для первого хода, используется в методе aiTurn()
+    boolean firstTurn = true;//счетчик для первого хода, используется в методе playerTurn()
+    private int player1;
+    private int player2;
+    private int playerSign;
+    private String player1sign;
+    private String player2sign;
 
 
 
@@ -57,20 +63,21 @@ public class XO_AI {
         initField();//инициализация таблицы подсчета шансов
         choiceAI();//выбор противника со случайным подбором ходов или осмысленным
         while (true) {
-            //choice(SIGN_X);//подсчет шансов для каждой клетки для обоих игроков
-            homoTurn();//ход хомо
-            if (checkWin(SIGN_X)) {//проверка на выигрыш хомо или ничью:
-                System.out.println("Вы выиграли!");//сообщить и выйти из цикла
+            playerTurn();//ход игрока 1
+            //homoTurn();//ход хомо
+            if (checkWin(player1sign)) {//проверка на выигрыш игрока 1 или ничью:
+                System.out.println("Победа игрока 1!");//сообщить и выйти из цикла
                 break;
             }
             if (isGameFieldFull()) {
                 break;
             }
 
-            aiTurn();//ход ИИ со случайным выбором
+            playerTurn();//ход игрока 2
+            //aiTurn();//ход ИИ со случайным выбором
             printNumericKeypad();
-            if (checkWin(SIGN_O)) {//проверка на выигрыш ИИ или ничью:
-                System.out.println("Вы проиграли!");//сообщить и выйти из цикла
+            if (checkWin(player2sign)) {//проверка на выигрыш игрока 2 или ничью:
+                System.out.println("Победа игрока 2!");//сообщить и выйти из цикла
                 break;
             }
             if (isGameFieldFull()) {
@@ -180,44 +187,90 @@ public class XO_AI {
     }
 
 
-    /**3.0 выбор ИИ со случайными ходами или осмысленными*/
-    int choiceAI (){
+    /**3.0 выбор игроков*/
+    int choiceAI() {
         Scanner ch = new Scanner(System.in);
+        int pl;
         do {
-            do {
-                System.out.println("Нажмите 0 для случайного выбора хода противником и 1 для осмысленного");
-                aiLevel = ch.nextInt();
-            }
-            while (aiLevel < 0 || aiLevel > 1);
-            switch (aiLevel) {
-                case 0:
-                    break;
-                case 1:
+            System.out.println("Первым ходит игрок 1. Выберите его (0 - человек, 1 - компьютер)");
+            pl = ch.nextInt();
+            player1 = pl;
+            System.out.println("Выберите игрока 2 (0 - человек, 1 - компьютер)");
+            pl = ch.nextInt();
+            player2 = pl;
+            System.out.println("Выберите знак игрока 1 (0 - нолики, 1 - крестики");
+            pl = ch.nextInt();
+            playerSign = pl;
+        }
+        while (pl < 0 || pl > 1);
+
+        do {
+            System.out.println("Нажмите 0 для случайного выбора хода компьютером и 1 для осмысленного");
+            aiLevel = ch.nextInt();
+        }
+        while (aiLevel < 0 || aiLevel > 1);
+
+        switch (aiLevel) {
+            case 0:
+                break;
+            case 1:
+                do {
                     System.out.println("Нажмите 1 для выбора простого уровня сложности и 2 для продвинутого");
                     aiLevel = ch.nextInt();
-                    //System.out.println("Крестики ходят первыми. Выберите крестики или нолики (x/o)Нажмите");
-                    break;
-            }
-            return aiLevel;
+                }
+                while (aiLevel < 1 || aiLevel > 2);
+                break;
         }
-        while (aiLevel < 0 || aiLevel > 2);//если введено не 1, 2 или 3, повторяем запрос
+        return aiLevel;
     }
 
 
-    /**3.1 ход хомо*/
-    void homoTurn() {
+    /** 3.1 универсальный метод вызова игроков*/
+    void playerTurn(/*int player1, int player2, int playerSign*/) {
+        if (playerSign == 0) {
+            player1sign = SIGN_O;
+            player2sign = SIGN_X;
+        }
+        if (playerSign == 1) {
+            player1sign = SIGN_X;
+            player2sign = SIGN_O;
+        }
+
+        if (firstTurn) { //для первого хода firstTurn == ИСТИНА, поэтому первым всегда ходит player1
+            if (player1 == 0) {
+                homoTurn(player1sign);
+            }
+            if (player1 == 1) {
+                aiTurn(player1sign);
+            }
+            firstTurn = false;
+        }
+        else {
+            if (player2 == 0) {
+                homoTurn(player2sign);
+            }
+            if (player2 == 1) {
+                aiTurn(player2sign);
+            }
+        firstTurn = true;
+        }
+    }
+
+
+    /**3.2 ход хомо*/
+    void homoTurn(String signXO) {
         Scanner sc = new Scanner(System.in);
         do {
             System.out.println("Ваш ход");
             gameCell = sc.nextInt() - 1;//ход считываем с клавиатуры NumKeypad
         }
         while (!isCellValid(gameCell));//бесконечный цикл, если НЕ(выбранная ячейка в диапазона 0..9 или пуста)=ИСТИНА
-        gameField[gameCell] = SIGN_X;
-        writeField(SIGN_X);//запись знака для хомо в таблицу шансов
+        gameField[gameCell] = signXO;
+        writeField(signXO);//запись знака для хомо в таблицу шансов
     }
 
-    /**3.2 ход ИИ (со случайным выбором или немного осмысленный)*/
-    void aiTurn() {
+    /**3.3 ход ИИ (со случайным выбором или немного осмысленный)*/
+    void aiTurn(String signXO) {
         do {
             if (aiLevel == 0){
                 gameCell = (int) (Math.random() * 9);//если ИИ тупой, каждый ход делается случайно
@@ -233,13 +286,13 @@ public class XO_AI {
                     gameCell = 4;//если ИИ умный, а центральная клетка свободна, первый ход - на нее
                     firstTurnOfAI = false;//счетчик первого хода сработал, далее ходы рассчитываются
                 } else {
-                    gameCell = choice(SIGN_O);//а второй ход и далее - рассчитываются
+                    gameCell = choice(signXO);//а второй ход и далее - рассчитываются
                 }
             }
         }
         while (!isCellValid(gameCell));//случайный выбор зациклен, если выбранная клетка не пустая
-        gameField[gameCell] = SIGN_O;
-        writeField(SIGN_O);//запись знака для ИИ в таблицу шансов
+        gameField[gameCell] = signXO;
+        writeField(signXO);//запись знака для ИИ в таблицу шансов
     }
 
 
@@ -305,11 +358,6 @@ public class XO_AI {
      * Если нет odds=2, смотрим все line, для которых odds=1 и выбираем случайно одну cell.
      * Метод должен вернуть одно значение int turn для выбора cell следующего хода ИИ
      * (или одного из двух ИИ, если играют два ИИ).
-     *
-     * Проблема: алгоритм дает приоритет срыву заполнения выигрышной линии соперника,
-     * а финальное заполнение своей линии делается лишь во вторую очередь.
-     * Возможно, причина в том, что алгоритм не успевает перебрать значения odds ВСЕХ клеток,
-     * а выбирает первую встречную (и это оказывается клетка с odds=2 противника).
      */
     int choice(String signXO) {
         int turn = 0;
