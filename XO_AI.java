@@ -7,7 +7,7 @@ import java.util.Scanner;
  * Используем три таблицы: одно-, двух- и трехмерный массивы.
  * Все игровое поле (все массивы) делится на клетки (9*cell).
  * В 2- и 3-м. массивах (таблицы подсчета шансов) каждая клетка делится на линии (4*line),
- * в 3-м. массиве (одна из таблиц подсчета шансов) линия делится на (3*unit).
+ * в 3-м. массиве (одна из таблиц подсчета шансов) линия делится на ячейки (3*unit).
  *
  * Каждая ячейка 3-м. массива (объект класса Field) содержит значения двух типов:
  * index: постоянный номер, переданный от номера клетки cell;
@@ -184,8 +184,11 @@ public class XO_AI {
     int choiceAI (){
         Scanner ch = new Scanner(System.in);
         do {
-            System.out.println("Нажмите 0 для случайного выбора хода противником и 1 для осмысленного");
-            aiLevel = ch.nextInt();
+            do {
+                System.out.println("Нажмите 0 для случайного выбора хода противником и 1 для осмысленного");
+                aiLevel = ch.nextInt();
+            }
+            while (aiLevel < 0 || aiLevel > 1);
             switch (aiLevel) {
                 case 0:
                     break;
@@ -213,7 +216,7 @@ public class XO_AI {
         writeField(SIGN_X);//запись знака для хомо в таблицу шансов
     }
 
-    /**3.2 ход ИИ (со случайным выбором или немного оcмысленный)*/
+    /**3.2 ход ИИ (со случайным выбором или немного осмысленный)*/
     void aiTurn() {
         do {
             if (aiLevel == 0){
@@ -222,7 +225,7 @@ public class XO_AI {
                 if (firstTurnOfAI) {
                     gameCell = (int) (Math.random() * 9);//если ИИ чуть-чуть умный, первый ход - случайный,
                     firstTurnOfAI = false;//счетчик первого хода сработал, далее ходы рассчитываются
-                } else if (!firstTurnOfAI) {
+                } else {
                     gameCell = choice(SIGN_O);//а второй ход и далее - считаются
                 }
             } else if (aiLevel == 2){
@@ -286,7 +289,7 @@ public class XO_AI {
             for (line = 0; line < field[cell].length; line++) {
                 for (unit = 0; unit < field[cell][line].length; unit++) {
                     if (field[cell][line][unit].getIndex() == gameCell && gameField[cell] == SIGN_EMPTY) {//в пустых клетках
-                        field[cell][line][unit].setSign(signXO);//вписываем знак во все unit, у которых index=gameCell
+                        field[cell][line][unit].setSign(signXO);//вписываем знак во все unit, у которых index=cell
                         oddsTable[cell][line].OddsPlus(signXO);//увеличиваем значения odds для линии
                     }
                 }
@@ -320,57 +323,103 @@ public class XO_AI {
 
 
 
-        //вывод поля на печать со значениями поля экземпляра this.index в порядке NumKeypad
-        System.out.println("\nПечать таблицы значений odds для X:");
-        cell = 6;
-        do {
-            for (line = 0; line < 4; line++) {
-                System.out.print(oddsTable[cell][line].getOdds(SIGN_X));
-
-                System.out.print("   ");
-                cell++;
-
-                if (cell == 3 && line == 3) break;
-                if ((cell == 9 || cell == 6 || cell == 3) & line != 3) {
-                    cell -= 3;
-                } else if ((cell == 9 & line == 3) || (cell == 6 & line == 3)) {
-                    cell -= 6;
-                    System.out.println();//отделение друг от друга трех рядов клеток
+        //пробегаем весь массив oddsTable и ищем свои odds, равные 2
+        for (cell = 0; cell < oddsTable.length; cell++) {
+            for (line = 0; line < oddsTable[cell].length; line++) {
+                if (oddsTable[cell][line].getOdds(signXO) == 2 && gameField[cell] == SIGN_EMPTY) {
+                    turn = cell;
+                    return turn;
                 }
-                System.out.println();//формирование колонок
             }
-            if (cell == 3 && line == 3) break;
         }
-        while (true);
 
-        System.out.println("\nПечать таблицы значений odds для O:");
-        cell = 6;
-        do {
-            for (line = 0; line < 4; line++) {
-                for (int i = 1; i <= 3; i++) {
-                    for (unit = 0; unit < field[cell][line].length; unit++) {//печать в ряд трех индексов одной линии, равной line
-                        System.out.print(oddsTable[cell][line].getOdds(SIGN_O));
-                        //field[cell][line][unit].printIndexAndDotInstead9();
+        //если не нашли свои odds=2, пробегаем весь массив oddsTable и ищем чужие odds, равные 2
+        for (cell = 0; cell < oddsTable.length; cell++) {
+            for (line = 0; line < oddsTable[cell].length; line++) {
+                if (oddsTable[cell][line].getAnotherOdds(signXO) == 2 && gameField[cell] == SIGN_EMPTY) {
+                    turn = cell;
+                    return turn;
+                }
+            }
+        }
+
+        //если не нашли чужие odds=2, пробегаем весь массив oddsTable, начиная считать клетки со своими odds=1
+        for (cell = 0; cell < oddsTable.length; cell++) {
+            for (line = 0; line < oddsTable[cell].length; line++) {
+                if (oddsTable[cell][line].getOdds(signXO) == 1 && gameField[cell] == SIGN_EMPTY) {
+                    line1Counter++; //начали считать число линий с odds=1
+                    cellMark = cell; //помечаем клетку, для которой начали считать число линий с odds=1
+                    // Если таких линий 2 в данной клетке, выбираем клетку этой линии для хода
+                    if (line1Counter == 2) {
+                        turn = cell;
+                        return turn;
                     }
-                    System.out.print("   ");
-                    cell++;
+                    // Если такая линия 1 в данной клетке, начинаем считать такие же клетки (с одной линией)
+                    if (line1Counter == 1) {
+                        cell1Counter++;
+                    }
                 }
-                if (cell == 3 && line == 3) break;
-                if ((cell == 9 || cell == 6 || cell == 3) & line != 3) {
-                    cell -= 3;
-                } else if ((cell == 9 & line == 3) || (cell == 6 & line == 3)) {
-                    cell -= 6;
-                    System.out.println();//отделение друг от друга трех рядов клеток
+                // Если таких линий нет в данной клетке, начинаем считать такие же клетки (без линий)
+                else if (oddsTable[cell][line].getOdds(signXO) == 0 && oddsTable[cell][line].are2signsAtTheSameTime()) {
+                    cell0Counter++;
                 }
-                System.out.println();//формирование колонок
             }
-            if (cell == 3 && line == 3) break;
+            //окончание проверки линий данной клетки, обнуляем счетчик шансов клетки
+            line1Counter = 0;
         }
-        while (true);
+
+        //если пришли сюда, значит, в таблице шансов нет клеток с odds=2 (своих или чужих),
+        //нет клеток, в которых есть две линии с odds=1 (line1Counter=2),
+        //а остались лишь клетки, в каждой из которых есть:
+        //либо одна линия с odds=1 (число таких клеток равно cell1Counter),
+        //либо все линии имеют odds=0 (число  таких клекто равно cell0Counter).
+
+        //если линия с odds=1 есть лишь в одной клетке, выбираем для хода ее
+        if (cell1Counter == 1) {
+            turn = cellMark;//если лишь одна клетка имеет линию с odds=1, для нее уже сработала метка cellMark
+            return turn;
+        }
+        //если есть несколько клеток с одной линией с odds=1, выбираем случайно порядковый номер одной из этих клеток
+        else if (cell1Counter > 1) {
+            randomTurn = (int) (Math.random() * cell1Counter);
+            cell1Counter = 0;
+            for (cell = 0; cell < oddsTable.length; cell++) {
+                for (line = 0; line < oddsTable[cell].length; line++) {
+                    if (oddsTable[cell][line].getOdds(signXO) == 1 && gameField[cell] == SIGN_EMPTY) {
+                        //когда порядковый номер клетки будет равен случайному randomTurn
+                        if (cell1Counter == randomTurn) {
+                            turn = cell;
+                            return turn;
+                        }
+                        cell1Counter++;
+                    }
+                }
+            }
+        }
+        //если есть несколько клеток, где линии не имеют odds>0, выбираем случайно одну из этих клеток,
+        //исключая те клетки, где odds=0 из-за двух знаков в одной линии одновременно
+        else if (cell0Counter > 1) {
+            randomTurn = (int) (Math.random() * cell0Counter);
+            cell0Counter = 0;
+            for (cell = 0; cell < oddsTable.length; cell++) {
+                for (line = 0; line < oddsTable[cell].length; line++) {
+                    if (oddsTable[cell][line].getOdds(signXO) == 0 && oddsTable[cell][line].are2signsAtTheSameTime()) {
+                        //когда порядковый номер клетки будет равен случайному randomTurn
+                        if (cell0Counter == randomTurn) {
+                            turn = cell;
+                            return turn;
+                        }
+                        cell1Counter++;
+                    }
+                }
+            }
+        }
+        return turn;
 
 
 
 
+        /**
         // Пробегаем по всем значениям cell oddsTable.
         for (cell = 0; cell < oddsTable.length; cell++) {
             // Пробегаем по всем значениям line oddsTable.
@@ -457,7 +506,7 @@ public class XO_AI {
                 }
             }
         }
-        return turn;
+        return turn;*/
     }
 
 
