@@ -50,7 +50,6 @@ public class XO2 {
     private String player1sign;
     private String player2sign;
 
-
     public static void main(String[] args) {
         new XO2().game();
     }
@@ -97,16 +96,7 @@ public class XO2 {
 
 
     void initOddsField() {
-        String[] baseStringLines =  {
-                "678",
-                "345",
-                "012",
-                "630",
-                "741",
-                "852",
-                "048",
-                "642"
-        };
+        String[] baseLines =  {"678", "345", "012", "630", "741", "852", "048", "642"};
 
         for (cell = 0; cell < oddsTable.length; cell++) {
             for (line = 0; line < oddsTable[cell].length; line++) {
@@ -116,7 +106,7 @@ public class XO2 {
 
         for (cell = 0; cell < oddsTable.length; cell++) {
             line = 0;
-            for (String baseStringLine : baseStringLines) {
+            for (String baseStringLine : baseLines) {
                 if (baseStringLine.contains(String.valueOf(cell))) {
                     oddsTable[cell][line].setStringLine(baseStringLine);
                     line++;
@@ -126,9 +116,10 @@ public class XO2 {
     }
 
 
+    //добавить защиту от неверного ввода
     void instruction() {
-        if (player1 == 0 | player2 == 0)
-            System.out.println("Для ввода номера клетки воспользуйтесь клавиатурой NumKeypad (от 0 до 9)");
+        if (player1 == 0 || player2 == 0)
+            System.out.println("Для ввода номера клетки воспользуйтесь клавиатурой NumKeypad (от 1 до 9)");
     }
 
 
@@ -147,7 +138,7 @@ public class XO2 {
         System.out.println();
     }
 
-
+    //добавить защиту от неверного ввода
     void gameModeChoice() {
         Scanner ch = new Scanner(System.in);
         int pl;
@@ -211,7 +202,7 @@ public class XO2 {
                 homoTurn(player1sign);
             }
             if (player1 == 1) {
-                aiTurn(player1sign);
+                aiTurn(player1sign, player2sign);
             }
             firstTurn = false;
         } else {
@@ -219,7 +210,7 @@ public class XO2 {
                 homoTurn(player2sign);
             }
             if (player2 == 1) {
-                aiTurn(player2sign);
+                aiTurn(player2sign, player1sign);
             }
             firstTurn = true;
         }
@@ -229,7 +220,7 @@ public class XO2 {
     void homoTurn(String signXO) {
         Scanner sc = new Scanner(System.in);
         do {
-            System.out.println("Ваш ход:");
+            System.out.println("Ваш ход: ");
             gameCell = sc.nextInt() - 1;
         }
         while (wrongChoice(gameCell));
@@ -238,7 +229,7 @@ public class XO2 {
     }
 
 
-    void aiTurn(String signXO) {
+    void aiTurn(String signXO, String anotherSignXO) {
         do {
             switch (aiLevel) {
                 case (0):
@@ -249,7 +240,7 @@ public class XO2 {
                         gameCell = (int) (Math.random() * 9);
                         firstTurnOfAI = false;
                     } else {
-                        gameCell = choice(SIGN_O);
+                        gameCell = choice(signXO, anotherSignXO);
                     }
                     break;
                 case (2):
@@ -257,7 +248,7 @@ public class XO2 {
                         gameCell = 4;
                         firstTurnOfAI = false;
                     } else {
-                        gameCell = choice(signXO);
+                        gameCell = choice(signXO, anotherSignXO);
                     }
                     break;
             }
@@ -289,7 +280,6 @@ public class XO2 {
 
 
     boolean checkWin(String dot) {
-        //проверка на заполнение вертикалей и горизонталей
         if ((gameField[0].equals(dot) && gameField[3].equals(dot) && gameField[6].equals(dot)) ||
                 (gameField[1].equals(dot) && gameField[4].equals(dot) && gameField[7].equals(dot)) ||
                 (gameField[2].equals(dot) && gameField[5].equals(dot) && gameField[8].equals(dot)) ||
@@ -297,7 +287,6 @@ public class XO2 {
                 (gameField[3].equals(dot) && gameField[4].equals(dot) && gameField[5].equals(dot)) ||
                 (gameField[6].equals(dot) && gameField[7].equals(dot) && gameField[8].equals(dot)))
             return true;
-        //проверка на заполнение диагоналей
         return (gameField[0].equals(dot) && gameField[4].equals(dot) && gameField[8].equals(dot)) ||
                 (gameField[2].equals(dot) && gameField[4].equals(dot) && gameField[6].equals(dot));
     }
@@ -307,7 +296,7 @@ public class XO2 {
         for (cell = 0; cell < oddsTable.length; cell++) {
             for (line = 0; line < oddsTable[cell].length; line++) {
                 if (gameField[cell].equals(SIGN_EMPTY)
-                        && oddsTable[cell][line].getStringLine().contains(String.valueOf(gameCell))) {
+                        && oddsTable[cell][line].getIndexLine().contains(String.valueOf(gameCell))) {
                     oddsTable[cell][line].OddsPlus(signXO);
                 }
             }
@@ -317,18 +306,17 @@ public class XO2 {
     /**Попробуй функцию оценки вынести в отдельный класс. Чтобы она принимала поле и игрока.
      * И возвращала массив возможных ходов, отсортированный в порядке оптимальности
      */
-    int choice(String signXO) {
+    int choice(String signXO, String anotherSignXO) {
         int line1Counter = 0;
         int cellMark = 0;
         int cell1Counter = 0;
         int cell0Counter = 0;
         int randomTurn;
 
+        //проверяем массив на наличие клеток сначала со своим odds=2, а затем с чужим.
         for (cell = 0; cell < oddsTable.length; cell++) {
             for (line = 0; line < oddsTable[cell].length; line++) {
-                if (gameField[cell].equals(SIGN_EMPTY)
-                        && !oddsTable[cell][line].getStringLine().equals("")
-                        && oddsTable[cell][line].getOdds(signXO) == 2) {
+                if (checkCell(2, cell, line, signXO, anotherSignXO)) {
                     return cell;
                 }
             }
@@ -336,20 +324,16 @@ public class XO2 {
 
         for (cell = 0; cell < oddsTable.length; cell++) {
             for (line = 0; line < oddsTable[cell].length; line++) {
-                if (gameField[cell].equals(SIGN_EMPTY)
-                        && !oddsTable[cell][line].getStringLine().equals("")
-                        && oddsTable[cell][line].getAnotherOdds(signXO) == 2) {
+                if (checkCell(2, cell, line, anotherSignXO, signXO)) {
                     return cell;
                 }
             }
         }
 
+
         for (cell = 0; cell < oddsTable.length; cell++) {
             for (line = 0; line < oddsTable[cell].length; line++) {
-                if (gameField[cell].equals(SIGN_EMPTY)
-                        && !oddsTable[cell][line].getStringLine().equals("")
-                        && oddsTable[cell][line].isOnlyOneSign()
-                        && oddsTable[cell][line].getOdds(signXO) == 1) {
+                if (checkCell(1, cell, line, signXO, anotherSignXO)) {
                     line1Counter++; //начали считать число линий с odds=1
                     cellMark = cell; //помечаем клетку, для которой начали считать число линий с odds=1
                     // Если таких линий 2 в данной клетке, выбираем клетку этой линии для хода
@@ -362,9 +346,7 @@ public class XO2 {
                     }
                 }
                 // Если таких линий нет в данной клетке, начинаем считать такие же клетки (без линий)
-                else if (gameField[cell].equals(SIGN_EMPTY)
-                        && !oddsTable[cell][line].getStringLine().equals("")
-                        && oddsTable[cell][line].getOdds(signXO) == 0) {
+                else if (checkCell(0, cell, line, signXO, anotherSignXO)) {
                     cell0Counter++;
                 }
             }
@@ -387,10 +369,7 @@ public class XO2 {
             cell1Counter = 0;
             for (cell = 0; cell < oddsTable.length; cell++) {
                 for (line = 0; line < oddsTable[cell].length; line++) {
-                    if (gameField[cell].equals(SIGN_EMPTY)
-                            && !oddsTable[cell][line].getStringLine().equals("")
-                            && oddsTable[cell][line].isOnlyOneSign()
-                            && oddsTable[cell][line].getOdds(signXO) == 1) {
+                    if (checkCell(1, cell, line, signXO, anotherSignXO)) {
                         //когда порядковый номер клетки будет равен случайному randomTurn
                         if (cell1Counter == randomTurn) {
                             return cell;
@@ -406,9 +385,7 @@ public class XO2 {
             cell0Counter = 0;
             for (cell = 0; cell < oddsTable.length; cell++) {
                 for (line = 0; line < oddsTable[cell].length; line++) {
-                    if (gameField[cell].equals(SIGN_EMPTY)
-                            && !oddsTable[cell][line].getStringLine().equals("")
-                            && oddsTable[cell][line].getOdds(signXO) == 0) {
+                    if (checkCell(0, cell, line, signXO, anotherSignXO)) {
                         //когда порядковый номер клетки будет равен случайному randomTurn
                         if (cell0Counter == randomTurn) {
                             return cell;
@@ -421,19 +398,28 @@ public class XO2 {
         return cell;
     }
 
+
+    //при переборе массива метод принимает значение клетки, линии, знака игрока и искомого значения odds
+    //возвращает истину, если клетка пустая, индекс линии не пустой, в линии записан лишь один знак и odds=oddsValue
+    boolean checkCell(int oddsValue, int cell, int line, String signXO, String anotherSignXO) {
+        return (gameField[cell].equals(SIGN_EMPTY)
+                && !oddsTable[cell][line].getIndexLine().equals("")
+                && oddsTable[cell][line].isOnlyOneSign()
+                && oddsTable[cell][line].getOdds(signXO, anotherSignXO) == oddsValue);
+    }
 }
 
 class OddsLine {
     private int odds_O = 0;
     private int odds_X = 0;
-    private String stringLine = "";
+    private String indexLine = "";
 
     public void setStringLine(String stringLine) {
-        this.stringLine = stringLine;
+        this.indexLine = stringLine;
     }
 
-    public String getStringLine() {
-        return stringLine;
+    public String getIndexLine() {
+        return indexLine;
     }
 
     public void OddsPlus(String signXO) {
@@ -445,15 +431,9 @@ class OddsLine {
         }
     }
 
-    public int getOdds(String signXO) {
-        if (signXO.equals("x")) {
-            return odds_X;
-        }
-        return odds_O;
-    }
-
-    public int getAnotherOdds(String signXO) {
-        if (signXO.equals("o")) {
+    //метод возвращает odds для первого из двух знаков signXO
+    public int getOdds(String firstSignXO, String secondSignXO) {
+        if (firstSignXO.equals("x")) {
             return odds_X;
         }
         return odds_O;
