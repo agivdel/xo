@@ -1,6 +1,7 @@
 package Agivdel;
 
 import java.util.Arrays;
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 /**
@@ -15,7 +16,7 @@ import java.util.Scanner;
  * 2) stringLine: индексная строка, содержащая три цифры, соответствующие трем клеткам,
  * входящих в определенную вертикаль/горизонталь/диагональ (индекс "678" означает три верхних
  * горизонтальных клетки игрового поля, "048" - диагональ из нижнего левого угла в верхний правый).
- *
+ * <p>
  * В зависимости от числа всех вертикалей/горизонталей/диагоналей), проходящих через клетку,
  * линий в каждой клетке может быть 2 (центральные клетки сторон), 3 (угловые клетки) или 4 (центральная клетка).
  * <p>
@@ -31,9 +32,7 @@ import java.util.Scanner;
 
 public class XO2 {
 
-    private final String SIGN_X = "x";
-    private final String SIGN_O = "o";
-    private final String SIGN_EMPTY = ".";
+    private final String SIGN_EMPTY = "." ;
 
     String[] gameField = new String[9];
     OddsLine[][] oddsTable = new OddsLine[9][4];
@@ -50,12 +49,12 @@ public class XO2 {
     private String player1sign;
     private String player2sign;
 
-    public static void main(String[] args) {
+    public static void main(String[] args) /*throws Exception*/ {
         new XO2().game();
     }
 
 
-    void game() {
+    void game() /*throws Exception*/ {
         initGameField();
         initOddsField();
         gameModeChoice();
@@ -69,7 +68,7 @@ public class XO2 {
                 break;
             }
             if (isGameFieldFull()) {
-                System.out.println("Ничья:");
+                System.out.println("Ничья");
                 break;
             }
 
@@ -81,12 +80,12 @@ public class XO2 {
                 break;
             }
             if (isGameFieldFull()) {
-                System.out.println("Ничья:");
+                System.out.println("Ничья");
                 break;
             }
         }
-        printNumericKeypad();
-        System.out.println("Конец игры");
+        //printNumericKeypad();
+        //System.out.println("Конец игры");
     }
 
 
@@ -96,7 +95,7 @@ public class XO2 {
 
 
     void initOddsField() {
-        String[] baseLines =  {"678", "345", "012", "630", "741", "852", "048", "642"};
+        String[] baseLines = {"678", "345", "012", "630", "741", "852", "048", "642"};
 
         for (cell = 0; cell < oddsTable.length; cell++) {
             for (line = 0; line < oddsTable[cell].length; line++) {
@@ -135,60 +134,76 @@ public class XO2 {
         System.out.print(gameField[0] + " ");
         System.out.print(gameField[1] + " ");
         System.out.print(gameField[2] + " ");
-        System.out.println();
+        System.out.println("\n_________________");
     }
 
-    //добавить защиту от неверного ввода
-    void gameModeChoice() {
+
+    void gameModeChoice() /*throws Exception*/ {
+        int playerSign = 0;
+        int pl = 0;
         Scanner ch = new Scanner(System.in);
-        int pl;
-        System.out.print("Первым ходит игрок 1. Выберите его (0 - человек, 1 - компьютер): ");
         do {
-            //while (!ch.hasNextInt()) {
-            //System.out.println("Неверный ввод. Повторите");
-            //ch.nextInt();
-            //}
-            player1 = ch.nextInt();
-            //ch.nextLine();
+            try {
+                System.out.print("Первым ходит игрок 1. Выберите его (0 - человек, 1 - компьютер): ");
+                pl = ch.nextInt();
+                player1 = pl;
+//                if (pl < 0 || pl > 1) {
+//                    throw new Exception();
+//                }
+            } catch (InputMismatchException e) {
+                System.out.println("Ошибка! Нажмите 0 или 1");
+            }
         }
         while (player1 < 0 || player1 > 1);
 
-        System.out.print("Выберите игрока 2 (0 - человек, 1 - компьютер): ");
-        do {
-            //while (!ch.hasNextInt()) {
-            //System.out.println("Неверный ввод. Повторите");
-            //ch.nextInt();
-            //}
-            player2 = ch.nextInt();
-            //ch.nextLine();
-        }
-        while (player2 < 0 || player2 > 1);
 
-        System.out.print("Выберите знак игрока 1 (0 - нолики, 1 - крестики): ");
-        int playerSign;
         do {
-
-            //while (!ch.hasNextInt()) {
-            //System.out.println("Неверный ввод. Повторите");
-            //ch.nextInt();
-            //}
-            playerSign = ch.nextInt();
+            try {
+                System.out.print("Выберите игрока 2 (0 - человек, 1 - компьютер): ");
+                pl = ch.nextInt();
+                player2 = pl;
+//                if (pl < 0 || pl > 1) {
+//                    throw new Exception();
+//                }
+            } catch (Exception e) {
+                System.out.println("Ошибка! Нажмите 0 или 1");
+            }
         }
-        while (playerSign < 0 || playerSign > 1);
+        while (pl < 0 || pl > 1);
+
+        do {
+            try {
+                System.out.print("Выберите знак игрока 1 (0 - нолики, 1 - крестики): ");
+                pl = ch.nextInt();
+                playerSign = pl;
+//                if (pl < 0 || pl > 1) {
+//                    throw new Exception();
+//                }
+            } catch (Exception e) {
+                System.out.println("Ошибка! Нажмите 0 или 1");
+            }
+        }
+        while (pl < 0 || pl > 1);
+
+
         if (playerSign == 0) {
-            player1sign = SIGN_O;
-            player2sign = SIGN_X;
+            player1sign = "o" ;
+            player2sign = "x" ;
         }
         if (playerSign == 1) {
-            player1sign = SIGN_X;
-            player2sign = SIGN_O;
+            player1sign = "x" ;
+            player2sign = "o" ;
         }
 
         if (player1 == 1 || player2 == 1) {
             do {
+                try {
 
-                System.out.print("Выберите уровень компьютерного игрока: 0 (простой), 1 (средний) или 2 (сложный): ");
-                aiLevel = ch.nextInt();
+                    System.out.print("Выберите уровень компьютерного игрока: 0 (простой), 1 (средний) или 2 (сложный): ");
+                    aiLevel = ch.nextInt();
+                } catch (final InputMismatchException e) {
+                    System.out.println("Ошибка! Нажмите 0, 1 или 2");
+                }
             }
             while (aiLevel < 0 || aiLevel > 2);
         }
@@ -217,6 +232,7 @@ public class XO2 {
     }
 
 
+    //добавить защиту от ошибки ввода
     void homoTurn(String signXO) {
         Scanner sc = new Scanner(System.in);
         do {
@@ -303,7 +319,8 @@ public class XO2 {
         }
     }
 
-    /**Попробуй функцию оценки вынести в отдельный класс. Чтобы она принимала поле и игрока.
+    /**
+     * Попробуй функцию оценки вынести в отдельный класс. Чтобы она принимала поле и игрока.
      * И возвращала массив возможных ходов, отсортированный в порядке оптимальности
      */
     int choice(String signXO, String anotherSignXO) {
@@ -311,29 +328,18 @@ public class XO2 {
         int cellMark = 0;
         int cell1Counter = 0;
         int cell0Counter = 0;
-        int randomTurn;
 
         //проверяем массив на наличие клеток сначала со своим odds=2, а затем с чужим.
-        for (cell = 0; cell < oddsTable.length; cell++) {
-            for (line = 0; line < oddsTable[cell].length; line++) {
-                if (checkCell(2, cell, line, signXO, anotherSignXO)) {
-                    return cell;
-                }
-            }
-        }
+        if (iteratingOverArray(2, signXO) != 9 ) //ИСТИНА, если нашлась подходящая cell
+            return iteratingOverArray(2, signXO);
 
-        for (cell = 0; cell < oddsTable.length; cell++) {
-            for (line = 0; line < oddsTable[cell].length; line++) {
-                if (checkCell(2, cell, line, anotherSignXO, signXO)) {
-                    return cell;
-                }
-            }
-        }
+        if (iteratingOverArray(2, anotherSignXO) != 9 )
+            return iteratingOverArray(2, anotherSignXO);
 
-
-        for (cell = 0; cell < oddsTable.length; cell++) {
+        //проверяем массив на наличие клеток со своими odds=1 и odds=0
+        for (cell = 0; cell < oddsTable.length; cell++) {//перебор массива, возврат cell
             for (line = 0; line < oddsTable[cell].length; line++) {
-                if (checkCell(1, cell, line, signXO, anotherSignXO)) {
+                if (isCellRight(1, cell, line, signXO)) {
                     line1Counter++; //начали считать число линий с odds=1
                     cellMark = cell; //помечаем клетку, для которой начали считать число линий с odds=1
                     // Если таких линий 2 в данной клетке, выбираем клетку этой линии для хода
@@ -346,73 +352,78 @@ public class XO2 {
                     }
                 }
                 // Если таких линий нет в данной клетке, начинаем считать такие же клетки (без линий)
-                else if (checkCell(0, cell, line, signXO, anotherSignXO)) {
+                else if (isCellRight(0, cell, line, signXO)) {
                     cell0Counter++;
                 }
             }
             line1Counter = 0;
         }
 
-        //если пришли сюда, значит, в таблице шансов нет клеток с odds=2 (своих или чужих),
-        //нет клеток, в которых есть две линии с odds=1 (line1Counter=2),
-        //а остались лишь клетки, в каждой из которых есть:
-        //либо одна линия с odds=1 (число таких клеток равно cell1Counter),
-        //либо все линии имеют odds=0 (число  таких клекто равно cell0Counter).
-
         //если линия с odds=1 есть лишь в одной клетке, выбираем для хода ее
         if (cell1Counter == 1) {
-            return cellMark;//если лишь одна клетка имеет линию с odds=1, для нее уже сработала метка cellMark
+            return cellMark;
         }
-        //если есть несколько клеток с одной линией с odds=1, выбираем случайно порядковый номер одной из этих клеток
-        else if (cell1Counter > 1) {
-            randomTurn = (int) (Math.random() * cell1Counter);
-            cell1Counter = 0;
-            for (cell = 0; cell < oddsTable.length; cell++) {
-                for (line = 0; line < oddsTable[cell].length; line++) {
-                    if (checkCell(1, cell, line, signXO, anotherSignXO)) {
-                        //когда порядковый номер клетки будет равен случайному randomTurn
-                        if (cell1Counter == randomTurn) {
-                            return cell;
-                        }
-                        cell1Counter++;
-                    }
-                }
+
+        //выбираем случайно одну из клеток, где линии не имеют odds=1
+        else if (cell1Counter > 1) {//если уж дошло до вызова этого метода, он всегда будет возвращать НЕ "9"
+            if (iteratingOverArray(1, signXO, cell1Counter) != 9) {//!!!всегда будет ИСТИНА
+                return iteratingOverArray(1, signXO, cell1Counter);
             }
         }
-        //если есть несколько клеток, где линии не имеют odds>0, выбираем случайно одну из этих клеток
+
+        //выбираем случайно одну из клеток, где линии не имеют odds>0
         else if (cell0Counter > 1) {
-            randomTurn = (int) (Math.random() * cell0Counter);
-            cell0Counter = 0;
-            for (cell = 0; cell < oddsTable.length; cell++) {
-                for (line = 0; line < oddsTable[cell].length; line++) {
-                    if (checkCell(0, cell, line, signXO, anotherSignXO)) {
-                        //когда порядковый номер клетки будет равен случайному randomTurn
-                        if (cell0Counter == randomTurn) {
-                            return cell;
-                        }
-                        cell0Counter++;
-                    }
-                }
+            if (iteratingOverArray(0, signXO, cell0Counter) != 9) {
+                return iteratingOverArray(0, signXO, cell0Counter);
             }
         }
         return cell;
     }
 
+    //перебор массива и поиск подходящей клетки
+    int iteratingOverArray(int oddsValue, String signXO) {
+        int checkValue = 9;//"9" не используется для обозначения клеток игрового поля, поэтому ее безопасно применять
+        for (cell = 0; cell < oddsTable.length; cell++) {
+            for (line = 0; line < oddsTable[cell].length; line++) {
+                if (isCellRight(oddsValue, cell, line, signXO)) {
+                    return cell;
+                }
+            }
+        }
+        return checkValue;
+    }
 
-    //при переборе массива метод принимает значение клетки, линии, знака игрока и искомого значения odds
+    //перебор массива и случайный выбор одной из подходящих клеток
+    int iteratingOverArray(int oddsValue, String signXO, int Cell0Counter) {
+        int checkValue = 9;//"9" не используется для обозначения клеток игрового поля, поэтому ее безопасно применять
+        int randomTurn = (int) (Math.random() * Cell0Counter);
+        int aCell0Counter = 0;
+        for (cell = 0; cell < oddsTable.length; cell++) {
+            for (line = 0; line < oddsTable[cell].length; line++) {
+                if (isCellRight(oddsValue, cell, line, signXO)) {
+                    if (aCell0Counter == randomTurn) {
+                        return cell;
+                    }
+                    aCell0Counter++;
+                }
+            }
+        }
+        return checkValue;
+    }
+
     //возвращает истину, если клетка пустая, индекс линии не пустой, в линии записан лишь один знак и odds=oddsValue
-    boolean checkCell(int oddsValue, int cell, int line, String signXO, String anotherSignXO) {
+    boolean isCellRight(int oddsValue, int cell, int line, String signXO) {
         return (gameField[cell].equals(SIGN_EMPTY)
                 && !oddsTable[cell][line].getIndexLine().equals("")
                 && oddsTable[cell][line].isOnlyOneSign()
-                && oddsTable[cell][line].getOdds(signXO, anotherSignXO) == oddsValue);
+                && oddsTable[cell][line].getOdds(signXO) == oddsValue);
     }
 }
 
 class OddsLine {
     private int odds_O = 0;
     private int odds_X = 0;
-    private String indexLine = "";
+    private String indexLine = "" ;
 
     public void setStringLine(String stringLine) {
         this.indexLine = stringLine;
@@ -425,18 +436,13 @@ class OddsLine {
     public void OddsPlus(String signXO) {
         if (signXO.equals("x")) {
             this.odds_X++;
-        }
-        else {
-            this.odds_O++;
-        }
+        } else this.odds_O++;
     }
 
-    //метод возвращает odds для первого из двух знаков signXO
-    public int getOdds(String firstSignXO, String secondSignXO) {
-        if (firstSignXO.equals("x")) {
+    public int getOdds(String signXO) {
+        if (signXO.equals("x")) {
             return odds_X;
-        }
-        return odds_O;
+        } else return odds_O;
     }
 
     public boolean isOnlyOneSign() {
