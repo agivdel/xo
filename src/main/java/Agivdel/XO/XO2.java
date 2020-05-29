@@ -45,7 +45,6 @@ public class XO2 {
     private int aiLevel;
 
     boolean firstTurnOfAI = true;
-    boolean firstTurn = true;
 
     private int line1Counter = 0;
     private int cellMark = 0;
@@ -67,7 +66,7 @@ public class XO2 {
         instructionForHomo();
         while (true) {
             System.out.println("Ход игрока 1 (" + player1sign + "):");
-            playerTurn();
+            player1Turn();
             printGameField();
             if (checkWin(player1sign)) {
                 System.out.println("Победа игрока 1!");
@@ -79,7 +78,7 @@ public class XO2 {
             }
 
             System.out.println("Ход игрока 2 (" + player2sign + "):");
-            playerTurn();
+            player2Turn();
             printGameField();
             if (checkWin(player2sign)) {
                 System.out.println("Победа игрока 2!");
@@ -206,26 +205,27 @@ public class XO2 {
     }
 
 
-    void playerTurn() {
-
-        if (firstTurn) {
-            if (player1 == 0) {
-                homoTurn(player1sign);
-            }
-            if (player1 == 1) {
-                aiTurn(player1sign, player2sign);
-            }
-            firstTurn = false;
-        } else {
-            if (player2 == 0) {
-                homoTurn(player2sign);
-            }
-            if (player2 == 1) {
-                aiTurn(player2sign, player1sign);
-            }
-            firstTurn = true;
+    void player1Turn(){
+        if (player1 == 0) {
+            homoTurn(player1sign);
+        }
+        if (player1 == 1) {
+            aiTurn(player1sign, player2sign);
         }
     }
+
+
+    void player2Turn(){
+        if (player2 == 0) {
+            homoTurn(player2sign);
+        }
+        if (player2 == 1) {
+            aiTurn(player2sign, player1sign);
+        }
+    }
+
+
+
 
 
     void homoTurn(String signXO) {
