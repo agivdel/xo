@@ -119,7 +119,7 @@ public class XO2 {
 
     void instructionForHomo() {
         if (player1 == 0 || player2 == 0)
-            System.out.println("Для ввода номера клетки воспользуйтесь клавиатурой NumKeypad (от 1 до 9)");
+            System.out.println("Игровое поле соответствует клавишам от 1 до 9 клавиатуры NumKeypad");
     }
 
 
