@@ -2,7 +2,7 @@ package Agivdel.XO;
 
 import java.util.ArrayList;
 
-public class Minimax {
+public class MMMinimax {
 
     public ArrayList<String> newField = new ArrayList<String>();
 
@@ -18,19 +18,19 @@ public class Minimax {
 
     int methodCalls = 0;
     int aScore;
-    Move bestSpot = minimax(origBoard, aiPlayer);
+    MMMove bestSpot = minimax(origBoard, aiPlayer);
 
 
 
 
-    Move minimax(ArrayList newField, String player) {
+    MMMove minimax(ArrayList newField, String player) {
         methodCalls++;
-        Move finalScore = null;
-        emptyCells = Check.emptyCellsCheck(newField);
-        if (Check.checkWin(newField, homoPlayer)) {
+        MMMove finalScore = null;
+        emptyCells = MMCheck.emptyCellsCheck(newField);
+        if (MMCheck.checkWin(newField, homoPlayer)) {
             finalScore.setScore(-10);
             return finalScore;
-        } else if (Check.checkWin(newField, aiPlayer)) {
+        } else if (MMCheck.checkWin(newField, aiPlayer)) {
             finalScore.setScore(10);
             return finalScore;
         } else if (emptyCells.size() == 0) {
@@ -38,17 +38,17 @@ public class Minimax {
             return finalScore;
         }
 
-        ArrayList<Move> moves = new ArrayList<Move>();
-        Move move;
+        ArrayList<MMMove> moves = new ArrayList<MMMove>();
+        MMMove move;
 
         for (String emptyCell : emptyCells) {
-            move = new Move(Integer.parseInt(emptyCell));//сохраняем номер клетиу в move.index
+            move = new MMMove(Integer.parseInt(emptyCell));//сохраняем номер клетиу в move.index
             newField.set(Integer.parseInt(emptyCell), player);//ходим на очередную пустую клетку текущим игроком
             if (player.equals(aiPlayer)) {//вызываем минимакс за противника
-                Move result = minimax(newField, homoPlayer);
+                MMMove result = minimax(newField, homoPlayer);
                 move.setScore(result.getScore());
             } else {
-                Move result = minimax(newField, aiPlayer);
+                MMMove result = minimax(newField, aiPlayer);
                 move.setScore(result.getScore());
             }
 

@@ -2,7 +2,7 @@ package Agivdel.XO;
 
 import java.util.ArrayList;
 
-public class Check {
+public class MMCheck {
 
     void game() {
 

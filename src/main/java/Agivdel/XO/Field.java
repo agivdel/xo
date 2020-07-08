@@ -2,13 +2,14 @@ package Agivdel.XO;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 public class Field {
 
     static final String SIGN_EMPTY = ".";
     static String[] game = new String[9];
-    static String[] checkLines = Arrays.copyOf(Odds.BASELINES, 8);
-    static ArrayList<String> signLines = new ArrayList<String>(8);
+    private static final String[] CHECK_LINES = Arrays.copyOf(Odds.BASELINES, 8);
+    private static final List<String> signLines = new ArrayList<String>(8);
 
     static void init() {
         Arrays.fill(game, SIGN_EMPTY);
@@ -31,7 +32,7 @@ public class Field {
     }
 
     static int isOnlyOneCell() {
-        if (emptyCell() == 1) {
+        if (emptyCellCount() == 1) {
             for (int i = 0; i < game.length; i++) {
                 if (game[i].equals(SIGN_EMPTY)) {
                     return i;
@@ -42,14 +43,14 @@ public class Field {
     }
 
     static boolean isDraw() {
-        if (emptyCell() == 0) {
+        if (emptyCellCount() == 0) {
             System.out.println("Ничья");
             return true;
         }
         return false;
     }
 
-    static int emptyCell() {
+    private static int emptyCellCount() {
         int j = 0;
         for (String c : game) {
             if (c.equals(SIGN_EMPTY)) {
@@ -69,10 +70,10 @@ public class Field {
 
     static void writeTable(int gameCell, String signXO) {
         game[gameCell] = signXO;
-        for (int i = 0; i < checkLines.length; i++) {
-            if (checkLines[i].contains(String.valueOf(gameCell))) {
-                String s = signLines.get(i).replace(String.valueOf(gameCell), signXO);
-                signLines.set(i, s);
+        for (int i = 0; i < CHECK_LINES.length; i++) {
+            if (CHECK_LINES[i].contains(String.valueOf(gameCell))) {
+                String sign = signLines.get(i).replace(String.valueOf(gameCell), signXO);
+                signLines.set(i, sign);
             }
         }
     }

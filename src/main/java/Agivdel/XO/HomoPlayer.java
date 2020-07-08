@@ -14,7 +14,7 @@ public class HomoPlayer {
                 System.out.println("Ваш ход: ");
                 gameCell = scanner.nextInt() - 1;
             } catch (InputMismatchException e) {
-                //ignore
+                e.getStackTrace();
             }
             scanner.skip(".*");
         }

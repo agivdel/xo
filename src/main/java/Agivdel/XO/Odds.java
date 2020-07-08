@@ -39,7 +39,7 @@ class Odds {
         for (int cell = 0; cell < Table.length; cell++) {
             for (int line = 0; line < Table[cell].length; line++) {
                 if (Field.game[cell].equals(Field.SIGN_EMPTY)
-                        && Odds.Table[cell][line].getIndexLine().contains(String.valueOf(gameCell))) {
+                        && Table[cell][line].getIndexLine().contains(String.valueOf(gameCell))) {
                     Table[cell][line].OddsPlus(signXO);
                 }
             }

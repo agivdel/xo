@@ -1,10 +1,10 @@
 package Agivdel.XO;
 
-public class Move {
+public class MMMove {
     private int score;
     private int index;
 
-    public Move(int index) {
+    public MMMove(int index) {
         this.index = index;
     }
 

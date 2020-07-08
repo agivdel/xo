@@ -2,36 +2,27 @@ package Agivdel.XO;
 
 public class Player {
 
-    private static boolean firstTurnMark = true;
+    private static boolean player1TurnMark = true;
 
     static void turn() {
-        if (firstTurnMark) {
+        if (player1TurnMark) {
             System.out.println("Ход игрока 1 (" + GameMode.player1sign + "):");
-            player1Turn();
-            firstTurnMark = false;
+            playerTurn(GameMode.player1, GameMode.player1sign, GameMode.player2sign);
+            player1TurnMark = false;
         }
         else {
             System.out.println("Ход игрока 2 (" + GameMode.player2sign + "):");
-            player2Turn();
-            firstTurnMark = true;
+            playerTurn(GameMode.player2, GameMode.player2sign, GameMode.player1sign);
+            player1TurnMark = true;
         }
     }
 
-    static void player1Turn() {
-        if (GameMode.player1 == 0) {
-            HomoPlayer.turn(GameMode.player1sign);
+    static void playerTurn(int playerNumber, String playerSign, String anotherPlayerSign){
+        if (playerNumber == 0) {
+            HomoPlayer.turn(playerSign);
         }
-        if (GameMode.player1 == 1) {
-            AIPlayer.turn(GameMode.player1sign, GameMode.player2sign);
-        }
-    }
-
-    static void player2Turn(){
-        if (GameMode.player2 == 0) {
-            HomoPlayer.turn(GameMode.player2sign);
-        }
-        if (GameMode.player2 == 1) {
-            AIPlayer.turn(GameMode.player2sign, GameMode.player1sign);
+        if (playerNumber == 1) {
+            AIPlayer.turn(playerSign, anotherPlayerSign);
         }
     }
 }

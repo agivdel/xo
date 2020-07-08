@@ -35,11 +35,11 @@ public class Choice {
                 return desiredCell;
             }
         }
-
+        //оказались здесь, если нет подходящих клеток. Значит, осталась пустой единственная клетка.
+        //Проверяем это и выбираем для хода ее.
         if ((desiredCell = Field.isOnlyOneCell()) < 9) {
             return desiredCell;
-        }
-        else System.out.println("Какая-то ерунда получается...");
+        } else System.out.println("Какая-то ерунда получается...");
 
         return desiredCell;
     }
@@ -84,9 +84,9 @@ public class Choice {
     }
 
     //перебор массива и случайный выбор одной из подходящих клеток "за два/три шага до победы"
-    private static int iteratingOverArray(int oddsValue, String signXO, int noLineInCellCounter) {
+    private static int iteratingOverArray(int oddsValue, String signXO, int LineInCellCounter) {
         int checkValue = 11;
-        int randomTurn = (int) (Math.random() * noLineInCellCounter);
+        int randomTurn = (int) (Math.random() * LineInCellCounter);
         int aCellCounter = 0;
         for (cell = 0; cell < Odds.Table.length; cell++) {
             for (line = 0; line < Odds.Table[cell].length; line++) {
