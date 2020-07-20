@@ -1,13 +1,13 @@
 package Agivdel.XO;
 
-public class Choice {
+public class CellChoice {
 
-    private static int cell;
-    private static int line;
-    private static int oneLineInCellCounter;
-    private static int noLineInCellCounter;
+    private int cell;
+    private int line;
+    private int oneLineInCellCounter;
+    private int noLineInCellCounter;
 
-    static int cell(String signXO, String anotherSignXO) {
+    int run(String signXO, String anotherSignXO) {
         int desiredCell;
 
         if ((desiredCell = preWinCellSearch(signXO)) < 9) //ИСТИНА, если нашлась подходящая cell
@@ -45,7 +45,7 @@ public class Choice {
     }
 
     //перебор массива и поиск подходящей клетки "за шаг до победы"
-    private static int preWinCellSearch(String signXO) {//oddsValue всегда равна 2, да и пусть
+    private int preWinCellSearch(String signXO) {//oddsValue всегда равна 2, да и пусть
         int checkValue = 9;//"9" не используется для обозначения клеток игрового поля, поэтому ее безопасно применять
         for (cell = 0; cell < Odds.Table.length; cell++) {
             for (line = 0; line < Odds.Table[cell].length; line++) {
@@ -58,7 +58,7 @@ public class Choice {
     }
 
     //ищем и считаем клетки "за два шага до победы" - со своими odds=1 и odds=0
-    private static int twoLinesInCellSearch(String signXO) {
+    private int twoLinesInCellSearch(String signXO) {
         int checkValue = 10;
         int linesInCellCounter = 0;
         oneLineInCellCounter = 0;
@@ -84,7 +84,7 @@ public class Choice {
     }
 
     //перебор массива и случайный выбор одной из подходящих клеток "за два/три шага до победы"
-    private static int iteratingOverArray(int oddsValue, String signXO, int LineInCellCounter) {
+    private int iteratingOverArray(int oddsValue, String signXO, int LineInCellCounter) {
         int checkValue = 11;
         int randomTurn = (int) (Math.random() * LineInCellCounter);
         int aCellCounter = 0;
@@ -102,9 +102,8 @@ public class Choice {
     }
 
     //возвращает истину, если клетка пустая, индекс линии не пустой, в линии записан лишь один знак и odds=oddsValue
-    private static boolean isCellRight(int oddsValue, int cell, int line, String signXO) {
-        return (Field.game[cell].equals(Field.SIGN_EMPTY)
-                && !Odds.Table[cell][line].getIndexLine().equals("")
+    private boolean isCellRight(int oddsValue, int cell, int line, String signXO) {
+        return (Field.game[cell].equals(Fin.SIGN_EMPTY)
                 && Odds.Table[cell][line].isOnlyOneSign()
                 && Odds.Table[cell][line].getOdds(signXO) == oddsValue);
     }

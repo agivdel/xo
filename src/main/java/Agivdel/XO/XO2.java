@@ -31,17 +31,9 @@ public class XO2 {
     public static void main(String[] args) {
 
         Field.init();
-        Odds.init();
-        GameMode.choice();
-        while (true) {
-            if (Field.isDraw())
-                break;
-            Player.turn();
-            Field.print();
-            if (Field.isWin()) {
-                break;
-            }
-        }
+        Odds.init();//объединить с первым методом в один
+        GameMode.tune();
+        PlayerTurn.start();
     }
 }
 

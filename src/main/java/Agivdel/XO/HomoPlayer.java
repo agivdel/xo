@@ -3,23 +3,30 @@ package Agivdel.XO;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
-public class HomoPlayer {
+public class HomoPlayer implements Player {
+    private final String sign;
 
-    private static int gameCell;
 
-    static public void turn(String signXO) {
+    public HomoPlayer(String sign) {
+        this.sign = sign;
+    }
+
+    @Override
+    public String getSign() {
+        return sign;
+    }
+
+    @Override
+    public int turn() {
         Scanner scanner = new Scanner(System.in);
-        do {
-            try {
-                System.out.println("Ваш ход: ");
-                gameCell = scanner.nextInt() - 1;
-            } catch (InputMismatchException e) {
-                e.getStackTrace();
-            }
-            scanner.skip(".*");
+        int gameCell = 0;
+        try {
+            System.out.println("Ваш ход: ");
+            gameCell = scanner.nextInt() - 1;
+        } catch (InputMismatchException e) {
+            e.getStackTrace();
         }
-        while (Field.wrongChoice(gameCell));
-        Field.writeTable(gameCell, signXO);
-        Odds.writeTable(gameCell, signXO);
+        scanner.skip(".*");
+        return gameCell;
     }
 }

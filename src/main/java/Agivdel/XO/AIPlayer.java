@@ -1,36 +1,55 @@
 package Agivdel.XO;
 
-public class AIPlayer {
+public class AIPlayer implements Player {
+    private final String sign;
+    private final String anotherSign;
+    private final int level;
 
-    private static int gameCell;
-    private static boolean firstTurnOfAI = true;
+    static boolean firstTurnOfAI = true;//первым ходом ИИ должен занять центральную клетку
 
-    static void turn(String signXO, String anotherSignXO) {
-        do {
-            switch (GameMode.aiLevel) {
-                case (0):
-                    gameCell = (int) (Math.random() * 9);
-                    break;
-                case (1):
-                    if (firstTurnOfAI) {
-                        gameCell = (int) (Math.random() * 9);
-                        firstTurnOfAI = false;
-                    } else {
-                        gameCell = Choice.cell(signXO, anotherSignXO);
-                    }
-                    break;
-                case (2):
-                    if (firstTurnOfAI && Field.game[4].equals(Field.SIGN_EMPTY)) {
-                        gameCell = 4;
-                        firstTurnOfAI = false;
-                    } else {
-                        gameCell = Choice.cell(signXO, anotherSignXO);
-                    }
-                    break;
-            }
+    public AIPlayer(String sign, String anotherSign, int level) {
+        this.sign = sign;
+        this.anotherSign = anotherSign;
+        this.level = level;
+    }
+
+    @Override//нужно обязательно переопределять, т.к. в классе PlayerTurn используется тип Player
+    public String getSign() {
+        return sign;
+    }
+
+    @Override
+    public int turn() {
+        int gameCell = 0;
+        switch (level) {
+            case (1):
+                gameCell = randomAITurn();
+                break;
+            case (2):
+                if (firstTurnOfAI) {
+                    gameCell = randomAITurn();
+                    firstTurnOfAI = false;
+                } else {
+                    gameCell = notRandomAITurn();
+                }
+                break;
+            case (3):
+                if (firstTurnOfAI & Field.game[4].equals(Fin.SIGN_EMPTY)) {
+                    gameCell = 4;
+                    firstTurnOfAI = false;
+                } else {
+                    gameCell = notRandomAITurn();
+                }
+                break;
         }
-        while (Field.wrongChoice(gameCell));
-        Field.writeTable(gameCell, signXO);
-        Odds.writeTable(gameCell, signXO);
+        return gameCell;
+    }
+
+    private int randomAITurn() {
+        return (int) (Math.random() * 9);
+    }
+
+    private int notRandomAITurn() {
+        return new CellChoice().run(sign, anotherSign);
     }
 }

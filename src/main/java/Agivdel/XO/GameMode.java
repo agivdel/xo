@@ -4,52 +4,52 @@ import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class GameMode {
+    static Player player1;//либо статические, либо нужно сохранять данные об игроках (например, в списке list)
+    static Player player2;
 
-    static int player1;
-    static int player2;
-    static String player1sign = "x";
-    static String player2sign = "o";
-    static int aiLevel;
-
-    static final String player1Choice = "Первым ходит игрок 1. Выберите его (0 - человек, 1 - компьютер): ";
-    static final String player2Choice = "Выберите игрока 2 (0 - человек, 1 - компьютер): ";
-    static final String playerSignChoice = "Выберите знак игрока 1 (0 - нолики, 1 - крестики): ";
-    static final String aiLevelChoice = "Выберите уровень компьютерного игрока: 0 (простой), 1 (средний) или 2 (сложный): ";
-
-    static void choice() {
-        player1 = input(player1Choice, 0, 1, 1);//при выборе знака игрока третий аргумент не задействован
-        player2 = input(player2Choice, 0, 1, 1);
-        if (input(playerSignChoice, 0, 1) == 0) {
-            player1sign = "o";
-            player2sign = "x";
-        }
-        if (player1 == 1 || player2 == 1) {
-            aiLevel = input(aiLevelChoice, 0, 1, 2);//а здесь нужны все три аргумента
-        }
-        HomoInstruct();
+    static void tune() {
+        new GameMode().choice();
     }
 
-    private static int input(String str, int...pl) {
+    void choice() {
+        String player1Sign = Fin.X;//по умолчанию игрок 1 играет крестиками
+        String player2Sign = Fin.O;
+        //"уровень" игрока (0 - человек, 1 - слабый ИИ, 2 - средний ИИ, 3 - сильный ИИ)
+        int player1Level = input(Fin.PL1_CHOICE, 0, 1, 2, 3);//считываем с консоли данные...
+        if (input(Fin.PL_SIGN_CHOICE, 0, 1) == 0) {//...для игрока 1
+            player1Sign = Fin.O;
+            player2Sign = Fin.X;
+        }
+        int player2Level = input(Fin.PL2_CHOICE, 0, 1, 2, 3);//...и для игрока 2
+        player1 = playerCreate(player1Sign, player2Sign, player1Level);
+        player2 = playerCreate(player2Sign, player1Sign, player2Level);
+        if (player1Level == 0 || player2Level == 0) {//если хотя бы один игрок человек, даем ему подсказку по клавишам
+            System.out.println(Fin.GAME_FIELD_EXAMPLE);
+        }
+    }
+
+    private int input(String str, int...pl) {
         Scanner scanner = new Scanner(System.in);
         while (true) {
             try {
                 System.out.print(str);
                 int result = scanner.nextInt();
-                if (result == pl[0] || result == pl[1] || result == pl[2]) {
+                if (result == pl[0] || result == pl[1] || result == pl[2] || result == pl[3]) {
                     return result;
                 }
             } catch (InputMismatchException e) {
                 //ignore
             }
-            System.err.print("Ошибка! Введите одну из показанных выше цифр ");
+            System.err.print(Fin.INPUT_MISTAKE);
             scanner.skip(".*");
         }
     }
 
-    private static void HomoInstruct() {
-        if (player1 == 0 || player2 == 0) {
-            System.out.println("Игровое поле соответствует клавишам от 1 до 9 клавиатуры NumKeypad:");
-            System.out.println("7 8 9\n4 5 6\n1 2 3\n_________________");
+    private Player playerCreate(String playerSign, String playerAnotherSign, int playerLevel) {
+        if (playerLevel == 0) {
+            return new HomoPlayer(playerSign);
+        } else {
+            return new AIPlayer(playerSign, playerAnotherSign, playerLevel);
         }
     }
 }
