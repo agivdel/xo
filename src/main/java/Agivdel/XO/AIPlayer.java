@@ -4,8 +4,7 @@ public class AIPlayer implements Player {
     private final String sign;
     private final String anotherSign;
     private final int level;
-
-    static boolean firstTurnOfAI = true;//первым ходом ИИ должен занять центральную клетку
+    private boolean firstTurnOfAI = true;//первым ходом ИИ должен занять центральную клетку
 
     public AIPlayer(String sign, String anotherSign, int level) {
         this.sign = sign;
