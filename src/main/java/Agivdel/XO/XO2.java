@@ -29,12 +29,7 @@ package Agivdel.XO;
 public class XO2 {
 
     public static void main(String[] args) {
-
-        Field.init();
-        Odds.init();//объединить с первым методом в один
-        GameMode.tune();
-        PlayerTurn.start();
+        new Run().start();
     }
 }
-
 

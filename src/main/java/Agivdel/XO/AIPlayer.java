@@ -20,36 +20,29 @@ public class AIPlayer implements Player {
 
     @Override
     public int turn() {
+        Check check = new Check(new Data());//обновляем данные
         int gameCell = 0;
         switch (level) {
             case (1):
-                gameCell = randomAITurn();
+                gameCell = (int) (Math.random() * 9);
                 break;
             case (2):
                 if (firstTurnOfAI) {
-                    gameCell = randomAITurn();
+                    gameCell = (int) (Math.random() * 9);
                     firstTurnOfAI = false;
                 } else {
-                    gameCell = notRandomAITurn();
+                    gameCell = check.cellFind(sign, anotherSign);
                 }
                 break;
             case (3):
-                if (firstTurnOfAI & Field.game[4].equals(Fin.SIGN_EMPTY)) {
+                if (firstTurnOfAI & check.isEmpty(4)) {
                     gameCell = 4;
                     firstTurnOfAI = false;
                 } else {
-                    gameCell = notRandomAITurn();
+                    gameCell = check.cellFind(sign, anotherSign);
                 }
                 break;
         }
         return gameCell;
-    }
-
-    private int randomAITurn() {
-        return (int) (Math.random() * 9);
-    }
-
-    private int notRandomAITurn() {
-        return new CellChoice().run(sign, anotherSign);
     }
 }

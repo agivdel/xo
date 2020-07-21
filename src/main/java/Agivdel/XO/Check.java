@@ -1,13 +1,30 @@
 package Agivdel.XO;
 
-public class CellChoice {
+/**
+ * класс хранит все методы проверки, существующие в программе.
+ * для вызова любого метода создается безымянный объект класса Control
+ * и в него передается объект Data data с последним апдейтом данных.
+ */
+public class Check {
+    private static int emptyCellNumber;
+    private static int cell;
+    private static int line;
+    private static int oneLineInCellCounter;
+    private static int noLineInCellCounter;
+    private static int cellMark;
 
-    private int cell;
-    private int line;
-    private int oneLineInCellCounter;
-    private int noLineInCellCounter;
+    private final String[] gameTable;
+    private final String[] winLines;
+    private final Odds[][] oddsTable;
 
-    int run(String signXO, String anotherSignXO) {
+    public Check(Data data) {//берем данные с предыдущего вызова write() класса Writer (т.е. с последнего обновления data)
+
+        this.gameTable = data.getGameTable();//т.к. поля у data статические,
+        this.winLines = data.getWinLines();
+        this.oddsTable = data.getOddsTable();
+    }
+
+    int cellFind(String signXO, String anotherSignXO) {
         int desiredCell;
 
         if ((desiredCell = preWinCellSearch(signXO)) < 9) //ИСТИНА, если нашлась подходящая cell
@@ -21,7 +38,7 @@ public class CellChoice {
 
         //если линия с odds=1 есть лишь в одной клетке, выбираем для хода ее
         if (oneLineInCellCounter == 1) {
-            int cellMark = 0;
+            cellMark = 0;
             return cellMark;//cellMark инициализирована в методе usualCellSearch()
         } //выбираем случайно одну из клеток, где линии имеют одну odds=1
         else if (oneLineInCellCounter > 1) {
@@ -37,9 +54,11 @@ public class CellChoice {
         }
         //оказались здесь, если нет подходящих клеток. Значит, осталась пустой единственная клетка.
         //Проверяем это и выбираем для хода ее.
-        if ((desiredCell = Field.isOnlyOneCell()) < 9) {
+        if ((desiredCell = oneEmptyCell()) >= 9) {
+            System.out.println("Какая-то ерунда получается...");
+        } else {
             return desiredCell;
-        } else System.out.println("Какая-то ерунда получается...");
+        }
 
         return desiredCell;
     }
@@ -47,8 +66,8 @@ public class CellChoice {
     //перебор массива и поиск подходящей клетки "за шаг до победы"
     private int preWinCellSearch(String signXO) {//oddsValue всегда равна 2, да и пусть
         int checkValue = 9;//"9" не используется для обозначения клеток игрового поля, поэтому ее безопасно применять
-        for (cell = 0; cell < Odds.Table.length; cell++) {
-            for (line = 0; line < Odds.Table[cell].length; line++) {
+        for (cell = 0; cell < oddsTable.length; cell++) {
+            for (line = 0; line < oddsTable[cell].length; line++) {
                 if (isCellRight(2, cell, line, signXO)) {
                     return cell;
                 }
@@ -63,11 +82,11 @@ public class CellChoice {
         int linesInCellCounter = 0;
         oneLineInCellCounter = 0;
         noLineInCellCounter = 0;
-        for (cell = 0; cell < Odds.Table.length; cell++) {
-            for (line = 0; line < Odds.Table[cell].length; line++) {
+        for (cell = 0; cell < oddsTable.length; cell++) {
+            for (line = 0; line < oddsTable[cell].length; line++) {
                 if (isCellRight(1, cell, line, signXO)) {
                     linesInCellCounter++;
-                    int cellMark = cell; //помечаем клетку, для которой начали считать число линий с odds=1
+                    cellMark = cell; //помечаем клетку, для которой начали считать число линий с odds=1
                     if (linesInCellCounter == 2) {
                         return cell;
                     }
@@ -88,8 +107,8 @@ public class CellChoice {
         int checkValue = 11;
         int randomTurn = (int) (Math.random() * LineInCellCounter);
         int aCellCounter = 0;
-        for (cell = 0; cell < Odds.Table.length; cell++) {
-            for (line = 0; line < Odds.Table[cell].length; line++) {
+        for (cell = 0; cell < oddsTable.length; cell++) {
+            for (line = 0; line < oddsTable[cell].length; line++) {
                 if (isCellRight(oddsValue, cell, line, signXO)) {
                     if (aCellCounter == randomTurn) {
                         return cell;
@@ -103,8 +122,61 @@ public class CellChoice {
 
     //возвращает истину, если клетка пустая, индекс линии не пустой, в линии записан лишь один знак и odds=oddsValue
     private boolean isCellRight(int oddsValue, int cell, int line, String signXO) {
-        return (Field.game[cell].equals(Fin.SIGN_EMPTY)
-                && Odds.Table[cell][line].isOnlyOneSign()
-                && Odds.Table[cell][line].getOdds(signXO) == oddsValue);
+        return (gameTable[cell].equals(Fin.SIGN_EMPTY)
+                && oddsTable[cell][line].isOnlyOneSign()
+                && oddsTable[cell][line].getOdds(signXO) == oddsValue);
+    }
+
+    int oneEmptyCell() {
+        if (emptyCellCount() == 1) {
+            return emptyCellNumber;//если пустая клетка только одна, ее номер уже записан в этой переменной
+        }
+        return 9;
+    }
+
+    boolean isDraw() {
+        if (emptyCellCount() == 0) {
+            System.out.println(Fin.DRAW);
+            return true;
+        }
+        return false;
+    }
+
+    private int emptyCellCount() {//подсчет пустых клеток
+        int j = 0;
+        for (int i = 0; i < gameTable.length; i++) {
+            if (isEmpty(i)) {
+                emptyCellNumber = i;//пригодится, если пустая клетка только одна
+                j++;
+            }
+        }
+        return j;
+    }
+
+    boolean isEmpty(int gameCell) {
+        return gameTable[gameCell].equals(Fin.SIGN_EMPTY);
+    }
+
+    boolean wrongChoice(int gameCell) {//если игрок-человек ввел неверное число, ему дается подсказка
+        if ((gameCell < 0 || gameCell >= 9) &
+                (GameMode.player1.getClass() == HomoPlayer.class || GameMode.player2.getClass() == HomoPlayer.class)) {
+            System.out.println(Fin.KEY_CHOICE);
+            return true;
+        }
+        return !this.gameTable[gameCell].equals(Fin.SIGN_EMPTY);
+    }
+
+    boolean isWin() {
+        for (String winLine : this.winLines) {
+            if (winLine.contains("xxx") || winLine.contains("ooo")) {
+                if (Run.oddTurn) {
+                    System.out.println(Fin.PL2_WIN);//oddTurn ИСТИНА в конце хода игрока 2
+                } else {
+                    System.out.println(Fin.PL1_WIN);
+                }
+                return true;
+            }
+        }
+        return false;
     }
 }

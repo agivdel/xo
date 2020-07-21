@@ -4,7 +4,7 @@ import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class GameMode {
-    static Player player1;//либо статические, либо нужно сохранять данные об игроках (например, в списке list)
+    static Player player1;//статические, т.к. нужно как-то сохранять данные об игроках
     static Player player2;
 
     static void tune() {
@@ -12,9 +12,9 @@ public class GameMode {
     }
 
     void choice() {
-        String player1Sign = Fin.X;//по умолчанию игрок 1 играет крестиками
+        String player1Sign = Fin.X;;//по умолчанию игрок 1 играет крестиками
         String player2Sign = Fin.O;
-        //"уровень" игрока (0 - человек, 1 - слабый ИИ, 2 - средний ИИ, 3 - сильный ИИ)
+        //playerLevel: "уровень" игрока (0 - человек, 1 - слабый ИИ, 2 - средний ИИ, 3 - сильный ИИ)
         int player1Level = input(Fin.PL1_CHOICE, 0, 1, 2, 3);//считываем с консоли данные...
         if (input(Fin.PL_SIGN_CHOICE, 0, 1) == 0) {//...для игрока 1
             player1Sign = Fin.O;
