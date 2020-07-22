@@ -1,5 +1,7 @@
 package Agivdel.XO;
 
+import java.util.Arrays;
+
 public class Run {
     static boolean oddTurn = true;//метка нечётного хода
     Data data = new Data();//первое обращение к классу Data, статическая инициализация всех статических полей Data

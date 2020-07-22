@@ -15,12 +15,12 @@ public class GameMode {
         String player1Sign = Fin.X;;//по умолчанию игрок 1 играет крестиками
         String player2Sign = Fin.O;
         //playerLevel: "уровень" игрока (0 - человек, 1 - слабый ИИ, 2 - средний ИИ, 3 - сильный ИИ)
-        int player1Level = input(Fin.PL1_CHOICE, 0, 1, 2, 3);//считываем с консоли данные...
-        if (input(Fin.PL_SIGN_CHOICE, 0, 1) == 0) {//...для игрока 1
+        int player1Level = input(Fin.PL1_CHOICE, 0, 1, 2, 3);//считываем с консоли данные для игрока 1...
+        if (input(Fin.PL_SIGN_CHOICE, 0, 1, 1, 1) == 0) {//...уточняем знак игрока 1.
             player1Sign = Fin.O;
             player2Sign = Fin.X;
         }
-        int player2Level = input(Fin.PL2_CHOICE, 0, 1, 2, 3);//...и для игрока 2
+        int player2Level = input(Fin.PL2_CHOICE, 0, 1, 2, 3);//считываем данные для игрока 2
         player1 = playerCreate(player1Sign, player2Sign, player1Level);
         player2 = playerCreate(player2Sign, player1Sign, player2Level);
         if (player1Level == 0 || player2Level == 0) {//если хотя бы один игрок человек, даем ему подсказку по клавишам

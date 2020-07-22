@@ -122,7 +122,7 @@ public class Check {
 
     //возвращает истину, если клетка пустая, индекс линии не пустой, в линии записан лишь один знак и odds=oddsValue
     private boolean isCellRight(int oddsValue, int cell, int line, String signXO) {
-        return (gameTable[cell].equals(Fin.SIGN_EMPTY)
+        return (isEmpty(cell)
                 && oddsTable[cell][line].isOnlyOneSign()
                 && oddsTable[cell][line].getOdds(signXO) == oddsValue);
     }
