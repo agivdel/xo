@@ -11,7 +11,7 @@ public class Run {
             if (check.isDraw())
                 break;
             playerChange();//здесь происходит очередное обновление data (метод write() внутри метода playerTurn())
-            Read.print(data);
+            Read.print();
             if (check.isWin()) {
                 break;
             }

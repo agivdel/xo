@@ -8,7 +8,8 @@ package Agivdel.XO;
  */
 public class Read {
 
-    static void print(Data data) {
+    static void print() {
+        Data data = new Data();
         String[] gameField = data.getGameTable();
 
         System.out.println(gameField[6] + " " + gameField[7] + " " + gameField[8]);
