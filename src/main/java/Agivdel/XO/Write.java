@@ -21,6 +21,7 @@ public class Write {
     }
 
     void write(int gameCell, String signXO) {
+        Check check = new Check(data);
         gameTable[gameCell] = signXO;//1) вписываем в клетку знак игрока - крестик или нолик
         for (int i = 0; i < Fin.BASE_LINES.length; i++) {//2)
             if (Fin.BASE_LINES[i].contains(String.valueOf(gameCell))) {
@@ -29,7 +30,7 @@ public class Write {
         }
         for (int cell = 0; cell < oddsTable.length; cell++) {//3)
             for (int line = 0; line < oddsTable[cell].length; line++) {
-                if (new Check(data).isEmpty(cell) && oddsTable[cell][line].getIndexLine().contains(String.valueOf(gameCell))) {
+                if (check.isEmpty(cell) && oddsTable[cell][line].getIndexLine().contains(String.valueOf(gameCell))) {
                     oddsTable[cell][line].oddsPlus(signXO);
                 }
             }
