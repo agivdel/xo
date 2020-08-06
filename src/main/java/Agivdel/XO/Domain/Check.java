@@ -1,4 +1,4 @@
-package Agivdel.XO;
+package Agivdel.XO.Domain;
 
 /**
  * класс хранит все методы проверки, существующие в программе.
@@ -17,11 +17,11 @@ public class Check {
     private final String[] winLines;
     private final Odds[][] oddsTable;
 
-    public Check(Data data) {//берем данные с предыдущего вызова write() класса Writer (т.е. с последнего обновления data)
+    public Check() {//берем данные с предыдущего вызова write() класса Writer (т.е. с последнего обновления data)
 
-        this.gameTable = data.getGameTable();//т.к. поля у data статические,
-        this.winLines = data.getWinLines();
-        this.oddsTable = data.getOddsTable();
+        this.gameTable = new Data().getGameTable();//т.к. поля у data статические,
+        this.winLines = new Data().getWinLines();
+        this.oddsTable = new Data().getOddsTable();
     }
 
     int cellFind(String signXO, String anotherSignXO) {

@@ -1,4 +1,4 @@
-package Agivdel.XO;
+package Agivdel.XO.Domain;
 
 import java.util.InputMismatchException;
 import java.util.Scanner;
@@ -12,10 +12,10 @@ public class GameMode {
     }
 
     void choice() {
+        //playerLevel: "уровень" игрока (0 - человек, 1 - слабый ИИ, 2 - средний ИИ, 3 - сильный ИИ)
+        int player1Level = input(Fin.PL1_CHOICE, 0, 1, 2, 3);//считываем с консоли данные для игрока 1
         String player1Sign = Fin.X;;//по умолчанию игрок 1 играет крестиками
         String player2Sign = Fin.O;
-        //playerLevel: "уровень" игрока (0 - человек, 1 - слабый ИИ, 2 - средний ИИ, 3 - сильный ИИ)
-        int player1Level = input(Fin.PL1_CHOICE, 0, 1, 2, 3);//считываем с консоли данные для игрока 1...
         if (input(Fin.PL_SIGN_CHOICE, 0, 1, 1, 1) == 0) {//...уточняем знак игрока 1.
             player1Sign = Fin.O;
             player2Sign = Fin.X;
@@ -38,9 +38,9 @@ public class GameMode {
                     return result;
                 }
             } catch (InputMismatchException e) {
-                //ignore
+                System.err.print(Fin.INPUT_MISTAKE);
             }
-            System.err.print(Fin.INPUT_MISTAKE);
+//            System.err.print(Fin.INPUT_MISTAKE);
             scanner.skip(".*");
         }
     }

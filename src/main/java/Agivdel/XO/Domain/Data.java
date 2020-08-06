@@ -1,4 +1,4 @@
-package Agivdel.XO;
+package Agivdel.XO.Domain;
 
 import java.util.Arrays;
 

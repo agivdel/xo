@@ -1,4 +1,4 @@
-package Agivdel.XO;
+package Agivdel.XO.Domain;
 
 public interface Player {
 

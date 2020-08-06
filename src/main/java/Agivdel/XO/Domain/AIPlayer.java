@@ -1,4 +1,4 @@
-package Agivdel.XO;
+package Agivdel.XO.Domain;
 
 public class AIPlayer implements Player {
     private final String sign;
@@ -19,13 +19,13 @@ public class AIPlayer implements Player {
 
     @Override
     public int turn() {
-        Check check = new Check(new Data());//обновляем данные
+        Check check = new Check();//обновляем данные
         int gameCell = 0;
         switch (level) {
-            case (1):
+            case 1:
                 gameCell = (int) (Math.random() * 9);
                 break;
-            case (2):
+            case 2:
                 if (firstTurnOfAI) {
                     gameCell = (int) (Math.random() * 9);
                     firstTurnOfAI = false;
@@ -33,7 +33,7 @@ public class AIPlayer implements Player {
                     gameCell = check.cellFind(sign, anotherSign);
                 }
                 break;
-            case (3):
+            case 3:
                 if (firstTurnOfAI & check.isEmpty(4)) {
                     gameCell = 4;
                     firstTurnOfAI = false;

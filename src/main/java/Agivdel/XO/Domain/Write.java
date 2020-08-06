@@ -1,4 +1,4 @@
-package Agivdel.XO;
+package Agivdel.XO.Domain;
 
 /**
  * Объект класса Writer создается в конце хода игрока.
@@ -8,20 +8,19 @@ package Agivdel.XO;
  *
  */
 public class Write {
-    private final Data data;
     private final String[] gameTable;
     private final String[] winLines;
     private final Odds[][] oddsTable;
 
     public Write() {
-        this.data = new Data();//берем данные с предыдущего вызова метода write() (т.е. с последнего обновления)
+        Data data = new Data();//берем данные с предыдущего вызова метода write() (т.е. с последнего обновления)
         this.gameTable = data.getGameTable();
         this.winLines = data.getWinLines();
         this.oddsTable = data.getOddsTable();
     }
 
     void write(int gameCell, String signXO) {
-        Check check = new Check(data);
+        Check check = new Check();
         gameTable[gameCell] = signXO;//1) вписываем в клетку знак игрока - крестик или нолик
         for (int i = 0; i < Fin.BASE_LINES.length; i++) {//2)
             if (Fin.BASE_LINES[i].contains(String.valueOf(gameCell))) {

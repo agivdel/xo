@@ -1,4 +1,6 @@
-package Agivdel.XO;
+package Agivdel.XO.Domain;
+
+import Agivdel.XO.Domain.Fin;
 
 class Odds {
 

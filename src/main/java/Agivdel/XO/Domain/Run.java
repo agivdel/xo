@@ -1,19 +1,16 @@
-package Agivdel.XO;
-
-import java.util.Arrays;
+package Agivdel.XO.Domain;
 
 public class Run {
     static boolean oddTurn = true;//метка нечётного хода
-    Data data = new Data();//первое обращение к классу Data, статическая инициализация всех статических полей Data
-    Check check = new Check(data);
 
     void start() {//цикл игры
+        Check check = new Check();//1-е создание new Data() в конструкторе new Check()
         GameMode.tune();
         while (true) {
             if (check.isDraw())
                 break;
-            playerChange();//здесь происходит очередное обновление data (метод write() внутри метода playerTurn())
-            Read.print();
+            playerChange();//здесь происходят очередные (2-е и 3-е) обновления data (метод write() внутри метода playerTurn())
+            Read.print();//4-е создание new Data()
             if (check.isWin()) {
                 break;
             }
@@ -32,10 +29,7 @@ public class Run {
     void playerTurn(int n, Player player) {//ход одного игрока
         int gameCell;
         System.out.println("Ход игрока " + n + " (" + player.getSign() + "):");
-        do {
-            gameCell = player.turn();
-        }
-        while (check.wrongChoice(gameCell));//проверка по последним данным
-        new Write().write(gameCell, player.getSign());//обновление данных
+        gameCell = player.turn();//2-е создание new Check(), для ИИ
+        new Write().write(gameCell, player.getSign());//обновление данных; 2-е создание new Data() и new Check()
     }
 }
