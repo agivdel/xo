@@ -1,7 +1,5 @@
 package Agivdel.XO.Domain;
 
-import Agivdel.XO.Domain.Fin;
-
 class Odds {
 
     private int odds_O = 0;

@@ -19,7 +19,7 @@ public class AIPlayer implements Player {
 
     @Override
     public int turn() {
-        Check check = new Check();//обновляем данные
+        CellChoice choice = new CellChoice();//обновляем данные
         int gameCell = 0;
         switch (level) {
             case 1:
@@ -30,15 +30,15 @@ public class AIPlayer implements Player {
                     gameCell = (int) (Math.random() * 9);
                     firstTurnOfAI = false;
                 } else {
-                    gameCell = check.cellFind(sign, anotherSign);
+                    gameCell = choice.cellFind(sign, anotherSign);
                 }
                 break;
             case 3:
-                if (firstTurnOfAI & check.isEmpty(4)) {
+                if (firstTurnOfAI & new Check().isEmpty(4)) {
                     gameCell = 4;
                     firstTurnOfAI = false;
                 } else {
-                    gameCell = check.cellFind(sign, anotherSign);
+                    gameCell = choice.cellFind(sign, anotherSign);
                 }
                 break;
         }

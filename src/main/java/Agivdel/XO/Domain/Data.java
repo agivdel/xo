@@ -19,8 +19,8 @@ public class Data {
         Arrays.fill(gameTable, Fin.SIGN_EMPTY);
         winLines = Fin.BASE_LINES;
         oddsTable = new Odds[][]{new Odds[3], new Odds[2], new Odds[3],
-                new Odds[2], new Odds[4], new Odds[2],
-                new Odds[3], new Odds[2], new Odds[3]};
+                                 new Odds[2], new Odds[4], new Odds[2],
+                                 new Odds[3], new Odds[2], new Odds[3]};
         for (int cell = 0; cell < oddsTable.length; cell++) {
             int line = 0;
             for (String baseLine : Fin.BASE_LINES) {
