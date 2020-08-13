@@ -1,6 +1,6 @@
 package Agivdel.XO.Domain;
 
-class Odds {
+public class Odds {
 
     private int odds_O = 0;
     private int odds_X = 0;

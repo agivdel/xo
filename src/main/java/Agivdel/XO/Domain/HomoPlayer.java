@@ -31,7 +31,7 @@ public class HomoPlayer implements Player {
         Scanner scanner = new Scanner(System.in);
         while (true) {
             try {
-                System.out.println("Ваш ход: ");
+                System.out.println(Fin.TURN_MEAT_BAG);
                 return scanner.nextInt() - 1;
             } catch (InputMismatchException e) {
                 System.out.println(Fin.KEY_CHOICE);

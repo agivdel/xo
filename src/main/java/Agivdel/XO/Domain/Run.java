@@ -12,6 +12,7 @@ public class Run {
             playerChange();//здесь происходят очередные (2-е и 3-е) обновления data (метод write() внутри метода playerTurn())
             Read.print();//4-е создание new Data()
             if (check.isWin()) {
+                printWinnerName();
                 break;
             }
         }
@@ -28,8 +29,16 @@ public class Run {
 
     void playerTurn(int n, Player player) {//ход одного игрока
         int gameCell;
-        System.out.println("Ход игрока " + n + " (" + player.getSign() + "):");
+        System.out.printf(Fin.PLAYER_TURN, n, player.getSign());
         gameCell = player.turn();//2-е создание new Check(), для ИИ
         new Write().write(gameCell, player.getSign());//обновление данных; 2-е создание new Data() и new Check()
+    }
+
+    void printWinnerName() {
+        if (oddTurn) {
+            System.out.printf(Fin.PL_WIN, 2);//oddTurn ИСТИНА в конце хода игрока 2
+        } else {
+            System.out.printf(Fin.PL_WIN, 1);
+        }
     }
 }

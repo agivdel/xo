@@ -1,7 +1,5 @@
 package Agivdel.XO.Domain;
 
-import Agivdel.XO.Interface.MainFrame;
-
 /**
  * Крестики-нолики с проверкой ИИ вероятностей победы для каждого хода.
  * Используем две таблицы: одно- и двухмерный массивы.
@@ -31,7 +29,7 @@ import Agivdel.XO.Interface.MainFrame;
 public class XO2 {
 
     public static void main(String[] args) {
-        new MainFrame();
+//        new MainFrame();
         new Run().start();
     }
 }

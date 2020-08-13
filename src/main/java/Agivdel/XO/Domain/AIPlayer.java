@@ -22,10 +22,10 @@ public class AIPlayer implements Player {
         CellChoice choice = new CellChoice();//обновляем данные
         int gameCell = 0;
         switch (level) {
-            case 1:
+            case 1://младший всегда ходит случайно
                 gameCell = (int) (Math.random() * 9);
                 break;
-            case 2:
+            case 2://средний первый ход делает наугад, потом считает
                 if (firstTurnOfAI) {
                     gameCell = (int) (Math.random() * 9);
                     firstTurnOfAI = false;
@@ -33,7 +33,7 @@ public class AIPlayer implements Player {
                     gameCell = choice.cellFind(sign, anotherSign);
                 }
                 break;
-            case 3:
+            case 3://старший всегда считает, а первый ход старается сделать на центральную клетку
                 if (firstTurnOfAI & new Check().isEmpty(4)) {
                     gameCell = 4;
                     firstTurnOfAI = false;

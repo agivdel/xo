@@ -46,7 +46,7 @@ public class CellChoice {
         //оказались здесь, если нет подходящих клеток. Значит, осталась пустой единственная клетка.
         //Проверяем это и выбираем для хода ее.
         if ((desiredCell = oneEmptyCell()) >= 9) {
-            System.out.println("Какая-то ерунда получается...");
+            System.out.println(Fin.SOME_SHIT);
         } else {
             return desiredCell;
         }

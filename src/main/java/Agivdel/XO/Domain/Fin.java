@@ -12,7 +12,9 @@ public class Fin {
     public static final String INPUT_MISTAKE = "Ошибка! Введите одну из показанных выше цифр ";
     public static final String KEY_CHOICE = "Нажмите цифровую клавишу от 1 до 9";
     public static final String GAME_FIELD_EXAMPLE = "Игровое поле соответствует клавишам от 1 до 9 клавиатуры NumKeypad:\n7|8|9\n4|5|6\n1|2|3\n_________________";
-    public static final String PL1_WIN = "Победа игрока 1!";
-    public static final String PL2_WIN = "Победа игрока 2!";
+    public static final String PL_WIN = "Победа игрока %d!\n";
     public static final String DRAW = "Ничья";
+    public static final String TURN_MEAT_BAG = "Ваш ход: ";
+    public static final String PLAYER_TURN = "Ход игрока %d (%s)\n";
+    public static final String SOME_SHIT = "Какая-то ерунда получается...";
 }

@@ -1,5 +1,7 @@
 package Agivdel.XO.Domain;
 
+import java.util.Arrays;
+
 /**
  * класс хранит все методы проверки, существующие в программе.
  * для вызова любого метода создается безымянный объект класса Control
@@ -40,25 +42,14 @@ public class Check {
     }
 
     boolean wrongChoice(int gameCell) {//если игрок-человек ввел неверное число, ему дается подсказка
-        if ((gameCell < 0 || gameCell >= 9) &
-                (GameMode.player1.getClass() == HomoPlayer.class || GameMode.player2.getClass() == HomoPlayer.class)) {
+        if (gameCell < 0 || gameCell >= 9) {
             System.out.println(Fin.KEY_CHOICE);
             return true;
         }
-        return !this.gameTable[gameCell].equals(Fin.SIGN_EMPTY);
+        return !this.gameTable[gameCell].equals(Fin.SIGN_EMPTY);//возвращаем ЛОЖЬ, если клетка пустая
     }
 
     boolean isWin() {
-        for (String winLine : this.winLines) {
-            if (winLine.contains("xxx") || winLine.contains("ooo")) {
-                if (Run.oddTurn) {
-                    System.out.println(Fin.PL2_WIN);//oddTurn ИСТИНА в конце хода игрока 2
-                } else {
-                    System.out.println(Fin.PL1_WIN);
-                }
-                return true;
-            }
-        }
-        return false;
+        return Arrays.stream(winLines).anyMatch(str->str.equals("xxx") || str.equals("ooo"));
     }
 }

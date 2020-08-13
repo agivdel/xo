@@ -5,7 +5,6 @@ package Agivdel.XO.Domain;
  * Обновление данных Data происходит только в данном методе write().
  * Каждый раз при создании нового объекта Writer поля data присваиваются полям объекта Writer
  * (т.е. перед новой записью данных в winLines и oddsTable мы используем для проверки данные с последней записи).
- *
  */
 public class Write {
     private final String[] gameTable;
@@ -17,19 +16,23 @@ public class Write {
         this.gameTable = data.getGameTable();
         this.winLines = data.getWinLines();
         this.oddsTable = data.getOddsTable();
+
     }
 
     void write(int gameCell, String signXO) {
-        Check check = new Check();
         gameTable[gameCell] = signXO;//1) вписываем в клетку знак игрока - крестик или нолик
-        for (int i = 0; i < Fin.BASE_LINES.length; i++) {//2)
-            if (Fin.BASE_LINES[i].contains(String.valueOf(gameCell))) {
-                winLines[i] = winLines[i].replace(String.valueOf(gameCell),signXO);
+
+        String cellNum = String.valueOf(gameCell);
+        for (int i = 0; i < Fin.BASE_LINES.length; i++) {
+            if (Fin.BASE_LINES[i].contains(cellNum)) {
+                winLines[i] = winLines[i].replace(cellNum, signXO);
             }
         }
-        for (int cell = 0; cell < oddsTable.length; cell++) {//3)
+
+        Check check = new Check();
+        for (int cell = 0; cell < oddsTable.length; cell++) {
             for (int line = 0; line < oddsTable[cell].length; line++) {
-                if (check.isEmpty(cell) && oddsTable[cell][line].getIndexLine().contains(String.valueOf(gameCell))) {
+                if (check.isEmpty(cell) && oddsTable[cell][line].getIndexLine().contains(cellNum)) {
                     oddsTable[cell][line].oddsPlus(signXO);
                 }
             }
